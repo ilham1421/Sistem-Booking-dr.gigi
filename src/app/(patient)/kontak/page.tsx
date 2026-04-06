@@ -1,26 +1,20 @@
 import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { prisma } from "@/lib/prisma";
+import { getSettings, getActiveSchedules } from "@/lib/data";
 import { getDayName } from "@/lib/utils";
 
 export const metadata = {
   title: "Kontak & Lokasi - Benteng Dental Care",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function KontakPage() {
-  const [settings, schedules] = await Promise.all([
-    prisma.setting.findMany(),
-    prisma.schedule.findMany({
-      where: { isActive: true },
-      orderBy: { dayOfWeek: "asc" },
-    }),
+  const [settingsMap, schedules] = await Promise.all([
+    getSettings(),
+    getActiveSchedules(),
   ]);
-
-  const settingsMap: Record<string, string> = {};
-  settings.forEach((s) => { settingsMap[s.key] = s.value; });
 
   const address = settingsMap.clinic_address || "Desa Benteng, Kec. Mandalle, Kab. Pangkep";
   const phone = settingsMap.clinic_phone || "+6285342236688";
@@ -37,18 +31,18 @@ export default async function KontakPage() {
 
   return (
     <>
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Kontak & Lokasi</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Kontak & Lokasi</h1>
           <p className="text-text-secondary max-w-xl mx-auto">
             Hubungi kami atau kunjungi klinik kami
           </p>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Contact Info */}
             <div className="space-y-6">
               <Card>

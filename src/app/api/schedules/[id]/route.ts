@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -33,6 +34,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
     },
   });
 
+  revalidateTag("schedules", "default");
   return NextResponse.json(schedule);
 }
 
@@ -50,5 +52,6 @@ export async function DELETE(_req: NextRequest, context: RouteContext) {
   }
 
   await prisma.schedule.delete({ where: { id } });
+  revalidateTag("schedules", "default");
   return NextResponse.json({ message: "Jadwal dihapus" });
 }

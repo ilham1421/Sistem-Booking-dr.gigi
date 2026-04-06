@@ -26,7 +26,7 @@ function FaqItemComponent({ question, answer }: FaqItem) {
         )}
       </button>
       {isOpen && (
-        <CardContent className="px-6 pb-4 pt-0">
+        <CardContent className="px-4 sm:px-6 pb-4 pt-0">
           <p className="text-sm text-text-secondary leading-relaxed">{answer}</p>
         </CardContent>
       )}

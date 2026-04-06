@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -32,6 +33,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
     },
   });
 
+  revalidateTag("services", "default");
   return NextResponse.json(service);
 }
 
@@ -53,9 +55,11 @@ export async function DELETE(_req: NextRequest, context: RouteContext) {
       where: { id },
       data: { isActive: false },
     });
+    revalidateTag("services", "default");
     return NextResponse.json({ message: "Layanan dinonaktifkan karena memiliki reservasi terkait" });
   }
 
   await prisma.service.delete({ where: { id } });
+  revalidateTag("services", "default");
   return NextResponse.json({ message: "Layanan dihapus" });
 }

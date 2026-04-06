@@ -109,12 +109,12 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
   if (isSuccess) {
     return (
       <>
-        <section className="bg-linear-to-b from-lavender to-white py-16">
+        <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl font-bold text-text-dark mb-3">Reservasi Online</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Reservasi Online</h1>
           </div>
         </section>
-        <section className="py-16">
+        <section className="py-10 sm:py-16">
           <div className="max-w-md mx-auto px-4 text-center">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 size={32} className="text-green-600" />
@@ -139,22 +139,22 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
 
   return (
     <>
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <CalendarCheck size={24} className="text-primary" />
           </div>
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Reservasi Online</h1>
-          <p className="text-text-secondary max-w-xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Reservasi Online</h1>
+          <p className="text-text-secondary max-w-xl mx-auto text-sm sm:text-base">
             Isi form di bawah untuk menjadwalkan kunjungan Anda
           </p>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Emergency Notice */}
-          <Card className="border-yellow-200 bg-yellow-50 mb-8">
+          <Card className="border-yellow-200 bg-yellow-50 mb-6 sm:mb-8">
             <CardContent className="p-4 flex items-start gap-3">
               <AlertTriangle size={20} className="text-yellow-600 mt-0.5 shrink-0" />
               <p className="text-sm text-yellow-800">

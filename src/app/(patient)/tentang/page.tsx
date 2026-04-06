@@ -11,9 +11,9 @@ export default function TentangPage() {
   return (
     <>
       {/* Header */}
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Tentang Dokter</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Tentang Dokter</h1>
           <p className="text-text-secondary max-w-xl mx-auto">
             Mengenal lebih dekat dokter gigi yang akan merawat kesehatan gigi Anda
           </p>
@@ -21,9 +21,9 @@ export default function TentangPage() {
       </section>
 
       {/* Doctor Profile */}
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-10">
             {/* Photo */}
             <div className="lg:col-span-2">
               <div className="bg-lavender rounded-2xl aspect-3/4 flex items-center justify-center">
@@ -40,7 +40,7 @@ export default function TentangPage() {
             <div className="lg:col-span-3">
               <div className="mb-6">
                 <p className="text-sm text-primary font-medium mb-1">drg.</p>
-                <h2 className="text-3xl font-bold text-text-dark mb-2">drg. Astuti</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-2">drg. Astuti</h2>
                 <p className="text-text-secondary">Dokter Gigi Umum</p>
               </div>
 
@@ -59,23 +59,23 @@ export default function TentangPage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
                 <Card>
-                  <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-primary">10+</p>
-                    <p className="text-xs text-text-secondary">Tahun Pengalaman</p>
+                  <CardContent className="p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl font-bold text-primary">10+</p>
+                    <p className="text-[10px] sm:text-xs text-text-secondary">Tahun Pengalaman</p>
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-primary">5000+</p>
-                    <p className="text-xs text-text-secondary">Pasien Dilayani</p>
+                  <CardContent className="p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl font-bold text-primary">5000+</p>
+                    <p className="text-[10px] sm:text-xs text-text-secondary">Pasien Dilayani</p>
                   </CardContent>
                 </Card>
                 <Card>
-                  <CardContent className="p-4 text-center">
-                    <p className="text-2xl font-bold text-primary">9</p>
-                    <p className="text-xs text-text-secondary">Jenis Layanan</p>
+                  <CardContent className="p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl font-bold text-primary">9</p>
+                    <p className="text-[10px] sm:text-xs text-text-secondary">Jenis Layanan</p>
                   </CardContent>
                 </Card>
               </div>
@@ -85,9 +85,9 @@ export default function TentangPage() {
       </section>
 
       {/* Details */}
-      <section className="py-16 bg-bg-light">
+      <section className="py-10 sm:py-16 bg-bg-light">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -168,9 +168,9 @@ export default function TentangPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold text-text-dark mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-text-dark mb-4">
             Konsultasikan Kesehatan Gigi Anda
           </h2>
           <p className="text-text-secondary mb-6">

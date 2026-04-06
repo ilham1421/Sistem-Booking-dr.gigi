@@ -2,20 +2,17 @@ import Link from "next/link";
 import { CalendarCheck, Info } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { prisma } from "@/lib/prisma";
+import { getActiveSchedules } from "@/lib/data";
 import { getDayName } from "@/lib/utils";
 
 export const metadata = {
   title: "Jadwal Praktik - Benteng Dental Care",
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function JadwalPage() {
-  const dbSchedules = await prisma.schedule.findMany({
-    where: { isActive: true },
-    orderBy: { dayOfWeek: "asc" },
-  });
+  const dbSchedules = await getActiveSchedules();
 
   const schedules = dbSchedules.map((s) => ({
     day: getDayName(s.dayOfWeek),
@@ -33,16 +30,16 @@ export default async function JadwalPage() {
 
   return (
     <>
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Jadwal Praktik</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Jadwal Praktik</h1>
           <p className="text-text-secondary max-w-xl mx-auto">
             Informasi jadwal praktik dokter gigi untuk memudahkan kunjungan Anda
           </p>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Card>
             <CardContent className="p-0">

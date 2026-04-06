@@ -1,0 +1,20 @@
+EXIT: 2
+STDOUT:
+src/lib/auth.ts(20,28): error TS2769: No overload matches this call.
+  Overload 1 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: null, options?: (SignOptions & { algorithm: "none"; }) | undefined): string', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'null'.
+      Type 'undefined' is not assignable to type 'null'.
+  Overload 2 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput, options?: SignOptions | undefined): string', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput'.
+      Type 'undefined' is not assignable to type 'Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput'.
+  Overload 3 of 5, '(payload: string | object | Buffer<ArrayBufferLike>, secretOrPrivateKey: Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput, callback: SignCallback): void', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput'.
+      Type 'undefined' is not assignable to type 'Buffer<ArrayBufferLike> | Secret | PrivateKeyInput | JsonWebKeyInput'.
+src/lib/auth.ts(25,12): error TS2352: Conversion of type 'Jwt & JwtPayload & void' to type '{ userId: string; role: string; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Jwt & JwtPayload & void' is missing the following properties from type '{ userId: string; role: string; }': userId, role
+src/lib/auth.ts(25,30): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'Buffer<ArrayBufferLike> | Secret | JsonWebKeyInput | PublicKeyInput | GetPublicKeyOrSecret'.
+      Type 'undefined' is not assignable to type 'Buffer<ArrayBufferLike> | Secret | JsonWebKeyInput | PublicKeyInput | GetPublicKeyOrSecret'.
+
+STDERR:

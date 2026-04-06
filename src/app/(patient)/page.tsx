@@ -15,10 +15,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { prisma } from "@/lib/prisma";
+import { getSettings, getActiveSchedules, getTestimonials } from "@/lib/data";
 import { getDayName } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const featuredServices = [
   { icon: Stethoscope, title: "Pemeriksaan Gigi", desc: "Konsultasi dan pemeriksaan menyeluruh untuk kesehatan gigi Anda" },
@@ -35,21 +35,12 @@ const advantages = [
 ];
 
 export default async function HomePage() {
-  const [testimonials, schedules, settings] = await Promise.all([
-    prisma.testimonial.findMany({
-      where: { isActive: true },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-    }),
-    prisma.schedule.findMany({
-      where: { isActive: true },
-      orderBy: { dayOfWeek: "asc" },
-    }),
-    prisma.setting.findMany(),
+  const [testimonials, schedules, settingsMap] = await Promise.all([
+    getTestimonials(3),
+    getActiveSchedules(),
+    getSettings(),
   ]);
 
-  const settingsMap: Record<string, string> = {};
-  settings.forEach((s) => { settingsMap[s.key] = s.value; });
   const whatsapp = settingsMap.clinic_whatsapp || "6285342236688";
   const clinicAddress = settingsMap.clinic_address || "Desa Benteng, Kec. Mandalle, Kab. Pangkep";
   const googleMapsUrl = settingsMap.google_maps_url || "https://maps.app.goo.gl/fbw482grmLqAH1iP9";
@@ -61,23 +52,23 @@ export default async function HomePage() {
     <>
       {/* Hero Section */}
       <section className="bg-linear-to-b from-lavender to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:py-28">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-1.5 text-sm text-primary font-medium shadow-sm mb-6">
-              <CheckCircle2 size={16} />
+            <div className="inline-flex items-center gap-2 bg-white rounded-full px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-primary font-medium shadow-sm mb-4 sm:mb-6">
+              <CheckCircle2 size={14} className="sm:w-4 sm:h-4" />
               Praktik Dokter Gigi Terpercaya
             </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-text-dark leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-dark leading-tight mb-4 sm:mb-6">
               Pelayanan Kesehatan Gigi yang{" "}
               <span className="text-primary">Bersih, Nyaman,</span> dan Profesional
             </h1>
-            <p className="text-lg text-text-secondary mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-text-secondary mb-6 sm:mb-8 max-w-2xl mx-auto">
               Dapatkan perawatan gigi terbaik dengan dokter berpengalaman dalam
               suasana klinik yang bersih, modern, dan ramah untuk seluruh keluarga.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/reservasi">
-                <Button size="lg" className="gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Link href="/reservasi" className="w-full sm:w-auto">
+                <Button size="lg" className="gap-2 w-full sm:w-auto">
                   <CalendarCheck size={20} />
                   Reservasi Sekarang
                 </Button>
@@ -86,8 +77,9 @@ export default async function HomePage() {
                 href={`https://wa.me/${whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-full sm:w-auto"
               >
-                <Button variant="outline" size="lg" className="gap-2">
+                <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
                   <Phone size={20} />
                   Hubungi WhatsApp
                 </Button>
@@ -98,10 +90,10 @@ export default async function HomePage() {
       </section>
 
       {/* About Short */}
-      <section className="py-16 lg:py-20">
+      <section className="py-10 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-text-dark mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-4">
               Tentang Praktik Kami
             </h2>
             <p className="text-text-secondary leading-relaxed">
@@ -115,10 +107,10 @@ export default async function HomePage() {
       </section>
 
       {/* Services */}
-      <section className="py-16 lg:py-20 bg-bg-light">
+      <section className="py-10 sm:py-16 lg:py-20 bg-bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-dark mb-3">Layanan Unggulan</h2>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-3">Layanan Unggulan</h2>
             <p className="text-text-secondary">Berbagai layanan perawatan gigi untuk kebutuhan Anda</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -145,10 +137,10 @@ export default async function HomePage() {
       </section>
 
       {/* Advantages */}
-      <section className="py-16 lg:py-20">
+      <section className="py-10 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-dark mb-3">Mengapa Memilih Kami</h2>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-3">Mengapa Memilih Kami</h2>
             <p className="text-text-secondary">Komitmen kami untuk pelayanan terbaik</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -166,10 +158,10 @@ export default async function HomePage() {
       </section>
 
       {/* Schedule Short */}
-      <section className="py-16 lg:py-20 bg-lavender">
+      <section className="py-10 sm:py-16 lg:py-20 bg-lavender">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-text-dark mb-6">Jadwal Praktik</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-4 sm:mb-6">Jadwal Praktik</h2>
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-3">
@@ -198,10 +190,10 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 lg:py-20">
+      <section className="py-10 sm:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text-dark mb-3">Testimoni Pasien</h2>
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-3">Testimoni Pasien</h2>
             <p className="text-text-secondary">Apa kata mereka tentang pelayanan kami</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -223,10 +215,10 @@ export default async function HomePage() {
       </section>
 
       {/* Location */}
-      <section className="py-16 lg:py-20 bg-bg-light">
+      <section className="py-10 sm:py-16 lg:py-20 bg-bg-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-text-dark mb-3">Lokasi Kami</h2>
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-dark mb-3">Lokasi Kami</h2>
             <p className="text-text-secondary">Mudah dijangkau dan strategis</p>
           </div>
           <div className="max-w-3xl mx-auto">
@@ -267,27 +259,27 @@ export default async function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 lg:py-20 bg-primary">
+      <section className="py-10 sm:py-16 lg:py-20 bg-primary">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">
             Siap Merawat Kesehatan Gigi Anda?
           </h2>
-          <p className="text-white/80 mb-8">
+          <p className="text-white/80 mb-6 sm:mb-8 text-sm sm:text-base">
             Jangan tunda perawatan gigi Anda. Reservasi sekarang dan dapatkan
             pelayanan terbaik dari dokter gigi berpengalaman.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/reservasi">
-              <Button variant="secondary" size="lg" className="gap-2">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <Link href="/reservasi" className="w-full sm:w-auto">
+              <Button variant="secondary" size="lg" className="gap-2 w-full sm:w-auto">
                 <CalendarCheck size={20} />
                 Reservasi Sekarang
               </Button>
             </Link>
-            <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="lg"
-                className="gap-2 border-white/30 text-white hover:bg-white/10 hover:text-white"
+                className="gap-2 border-white/30 text-white hover:bg-white/10 hover:text-white w-full sm:w-auto"
               >
                 <Phone size={20} />
                 Hubungi WhatsApp

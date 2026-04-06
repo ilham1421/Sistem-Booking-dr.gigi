@@ -3,34 +3,31 @@ import { Clock, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { formatCurrency } from "@/lib/utils";
-import { prisma } from "@/lib/prisma";
+import { getActiveServices } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata = {
   title: "Layanan - Benteng Dental Care",
 };
 
 export default async function LayananPage() {
-  const services = await prisma.service.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: "asc" },
-  });
+  const services = await getActiveServices();
 
   return (
     <>
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Layanan Kami</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Layanan Kami</h1>
           <p className="text-text-secondary max-w-xl mx-auto">
             Berbagai layanan perawatan gigi dengan standar kualitas terbaik
           </p>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {services.map((svc) => (
               <Card key={svc.id} className="hover:shadow-md transition-shadow">
                 <CardContent className="p-6">

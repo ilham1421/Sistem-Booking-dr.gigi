@@ -22,5 +22,5 @@ export function CardHeader({ children, className }: CardProps) {
 }
 
 export function CardContent({ children, className }: CardProps) {
-  return <div className={cn("px-6 py-4", className)}>{children}</div>;
+  return <div className={cn("px-4 py-3 sm:px-6 sm:py-4", className)}>{children}</div>;
 }

@@ -1,38 +1,33 @@
-import { prisma } from "@/lib/prisma";
 import { HelpCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { FaqAccordion } from "./FaqAccordion";
+import { getActiveFaqs, getSettings } from "@/lib/data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function FaqPage() {
-  const [faqs, settings] = await Promise.all([
-    prisma.faq.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: "asc" },
-    }),
-    prisma.setting.findMany(),
+  const [faqs, settingsMap] = await Promise.all([
+    getActiveFaqs(),
+    getSettings(),
   ]);
 
-  const settingsMap: Record<string, string> = {};
-  settings.forEach((s) => { settingsMap[s.key] = s.value; });
   const whatsapp = settingsMap.clinic_whatsapp || "6285342236688";
 
   return (
     <>
-      <section className="bg-linear-to-b from-lavender to-white py-16">
+      <section className="bg-linear-to-b from-lavender to-white py-10 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <HelpCircle size={24} className="text-primary" />
           </div>
-          <h1 className="text-4xl font-bold text-text-dark mb-3">Pertanyaan Umum (FAQ)</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-text-dark mb-3">Pertanyaan Umum (FAQ)</h1>
           <p className="text-text-secondary max-w-xl mx-auto">
             Jawaban untuk pertanyaan yang sering diajukan oleh pasien
           </p>
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-10 sm:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <FaqAccordion faqs={faqs.map((f) => ({ question: f.question, answer: f.answer }))} />
 

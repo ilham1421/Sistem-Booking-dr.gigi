@@ -14,11 +14,11 @@ export function Footer({ settings }: Props) {
 
   return (
     <footer className="bg-text-dark text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* About */}
-          <div>
-            <div className="flex items-center gap-2 mb-4">
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Image src="/logo.jpeg" alt="Benteng Dental Care" width={32} height={32} className="w-8 h-8 rounded-lg object-cover" />
               <span className="font-semibold text-lg">Benteng Dental Care</span>
             </div>
@@ -77,7 +77,7 @@ export function Footer({ settings }: Props) {
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="border-t border-gray-700 mt-6 sm:mt-10 pt-4 sm:pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
           <p className="text-sm text-gray-500">
             &copy; {new Date().getFullYear()} Benteng Dental Care. All rights reserved.
           </p>

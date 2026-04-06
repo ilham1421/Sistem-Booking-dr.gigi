@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   const services = await prisma.service.findMany({
@@ -33,5 +34,6 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  revalidateTag("services", "default");
   return NextResponse.json(service, { status: 201 });
 }
