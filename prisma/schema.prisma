@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  RECEPTIONIST
+}
+
+enum PatientType {
+  NEW
+  EXISTING
+}
+
+enum ReservationStatus {
+  WAITING
+  CONFIRMED
+  RESCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(DOCTOR)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  doctor Doctor?
+
+  @@map("users")
+}
+
+model Doctor {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  fullName       String
+  title          String   @default("drg.")
+  photo          String?
+  bio            String?  @db.Text
+  experience     String?  @db.Text
+  specialization String?
+  commitment     String?  @db.Text
+  vision         String?  @db.Text
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schedules    Schedule[]
+  reservations Reservation[]
+
+  @@map("doctors")
+}
+
+model Patient {
+  id          String      @id @default(cuid())
+  name        String
+  phone       String
+  email       String?
+  patientType PatientType @default(NEW)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  reservations Reservation[]
+
+  @@map("patients")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  benefit     String?  @db.Text
+  duration    Int?
+  price       Int?
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  reservations Reservation[]
+
+  @@map("services")
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  doctorId    String
+  dayOfWeek   Int
+  startTime   String
+  endTime     String
+  breakStart  String?
+  breakEnd    String?
+  quota       Int      @default(5)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@map("schedules")
+}
+
+model BlockedDate {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@map("blocked_dates")
+}
+
+model Reservation {
+  id          String            @id @default(cuid())
+  patientId   String
+  serviceId   String
+  doctorId    String?
+  date        DateTime          @db.Date
+  time        String
+  complaint   String?           @db.Text
+  notes       String?           @db.Text
+  adminNotes  String?           @db.Text
+  status      ReservationStatus @default(WAITING)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  patient Patient          @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  service Service          @relation(fields: [serviceId], references: [id])
+  doctor  Doctor?          @relation(fields: [doctorId], references: [id])
+  logs    ReservationLog[]
+
+  @@map("reservations")
+}
+
+model ReservationLog {
+  id            String   @id @default(cuid())
+  reservationId String
+  action        String
+  description   String?  @db.Text
+  performedBy   String?
+  createdAt     DateTime @default(now())
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+
+  @@map("reservation_logs")
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  content   String   @db.Text
+  rating    Int      @default(5)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faqs")
+}
