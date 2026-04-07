@@ -1,0 +1,43 @@
+EXIT CODE: null
+STDOUT:
+
+> project-capstone@0.1.0 build
+> prisma generate && next build --webpack
+
+
+✔ Generated Prisma Client (v7.6.0) to .\node_modules\@prisma\client in 1.01s
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+
+  Skipping creating a lockfile at D:\Project Capstone\.next\lock because we're using WASM bindings
+▲ Next.js 16.2.2 (webpack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 53s
+  Skipping validation of types
+  Finished TypeScript config validation in 125ms ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/22) ...
+  Generating static pages using 1 worker (5/22) 
+  Generating static pages using 1 worker (10/22) 
+  Generating static pages using 1 worker (16/22) 
+✓ Generating static pages using 1 worker (22/22) in 20.6s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+STDERR:
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\Project Capstone\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
