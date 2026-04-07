@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -47,6 +48,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-lavender to-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-primary mb-6 transition-colors"
+        >
+          <ArrowLeft size={16} /> Kembali ke Beranda
+        </Link>
+
         <div className="text-center mb-8">
           <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
             <Lock size={24} className="text-white" />

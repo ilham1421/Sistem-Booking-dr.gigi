@@ -9,7 +9,7 @@ export default async function ReservasiPage() {
     prisma.service.findMany({
       where: { isActive: true },
       orderBy: { name: "asc" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, price: true, duration: true },
     }),
     getSettings(),
   ]);
@@ -19,6 +19,8 @@ export default async function ReservasiPage() {
   const serviceOptions = services.map((s) => ({
     value: s.id,
     label: s.name,
+    price: s.price,
+    duration: s.duration,
   }));
 
   return <ReservationForm serviceOptions={serviceOptions} whatsapp={whatsapp} />;

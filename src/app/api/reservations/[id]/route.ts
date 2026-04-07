@@ -94,10 +94,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
     data: {
       ...updateData,
       logs: logEntries.length > 0 ? {
-        create: logEntries.map((log) => ({
-          ...log,
-          reservationId: undefined,
-        })),
+        create: logEntries.map((log) => log),
       } : undefined,
     },
     include: { patient: true, service: true, logs: true },

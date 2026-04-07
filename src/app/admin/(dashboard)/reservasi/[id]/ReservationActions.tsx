@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import { Input } from "@/components/ui/Input";
-import { CheckCircle, XCircle, RefreshCw, Clock, AlertTriangle } from "lucide-react";
+import { CheckCircle, XCircle, RefreshCw, Clock, AlertTriangle, MessageCircle, Bell } from "lucide-react";
 
 interface Reservation {
   id: string;
@@ -14,6 +14,13 @@ interface Reservation {
   date: Date;
   time: string;
   adminNotes: string | null;
+  patient: {
+    name: string;
+    phone: string;
+  };
+  service: {
+    name: string;
+  };
 }
 
 interface Props {
@@ -45,8 +52,44 @@ export function ReservationActions({ reservation }: Props) {
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
   const [error, setError] = useState("");
+  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null);
 
   const transitions = statusTransitions[reservation.status] || [];
+
+  function buildWhatsAppUrl(status: string, resDate?: string, resTime?: string) {
+    const phone = reservation.patient.phone.replace(/[^0-9]/g, "");
+    const formattedPhone = phone.startsWith("0") ? "62" + phone.slice(1) : phone;
+    const patientName = reservation.patient.name;
+    const serviceName = reservation.service.name;
+    const date = resDate || new Date(reservation.date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const time = resTime || reservation.time;
+
+    let message = "";
+    if (status === "CONFIRMED") {
+      message = `Halo ${patientName},\n\nReservasi Anda di *Benteng Dental Care* telah *dikonfirmasi* ✅\n\n📋 Layanan: ${serviceName}\n📅 Tanggal: ${date}\n🕐 Jam: ${time}\n\nMohon datang 10 menit sebelum jadwal. Jika ada perubahan, silakan hubungi kami.\n\nTerima kasih! 🙏`;
+    } else if (status === "RESCHEDULED") {
+      message = `Halo ${patientName},\n\nReservasi Anda di *Benteng Dental Care* telah *dijadwalkan ulang* 🔄\n\n📋 Layanan: ${serviceName}\n📅 Tanggal Baru: ${date}\n🕐 Jam Baru: ${time}\n\nMohon datang 10 menit sebelum jadwal. Jika ada pertanyaan, silakan hubungi kami.\n\nTerima kasih! 🙏`;
+    } else if (status === "CANCELLED") {
+      message = `Halo ${patientName},\n\nMohon maaf, reservasi Anda di *Benteng Dental Care* telah *dibatalkan* ❌\n\n📋 Layanan: ${serviceName}\n📅 Tanggal: ${date}\n🕐 Jam: ${time}\n\nSilakan melakukan reservasi ulang melalui website kami jika diperlukan.\n\nTerima kasih! 🙏`;
+    }
+
+    return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+  }
+
+  function buildReminderUrl() {
+    const phone = reservation.patient.phone.replace(/[^0-9]/g, "");
+    const formattedPhone = phone.startsWith("0") ? "62" + phone.slice(1) : phone;
+    const patientName = reservation.patient.name;
+    const serviceName = reservation.service.name;
+    const date = new Date(reservation.date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const time = reservation.time;
+
+    const message = `Halo ${patientName},\n\nIni adalah pengingat bahwa Anda memiliki jadwal kunjungan *besok* di *Benteng Dental Care* 🔔\n\n📋 Layanan: ${serviceName}\n📅 Tanggal: ${date}\n🕐 Jam: ${time}\n\nMohon datang 10 menit sebelum jadwal. Jika ingin mengubah jadwal, silakan hubungi kami segera.\n\nSampai jumpa! 😊`;
+
+    return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+  }
+
+  const isConfirmed = reservation.status === "CONFIRMED";
 
   async function handleStatusChange(newStatus: string) {
     if (newStatus === "RESCHEDULED") {
@@ -76,6 +119,14 @@ export function ReservationActions({ reservation }: Props) {
         return;
       }
       router.refresh();
+
+      if (["CONFIRMED", "RESCHEDULED", "CANCELLED"].includes(newStatus)) {
+        const rDate = rescheduleData?.date
+          ? new Date(rescheduleData.date).toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+          : undefined;
+        const url = buildWhatsAppUrl(newStatus, rDate, rescheduleData?.time);
+        setWhatsappUrl(url);
+      }
     } catch {
       setError("Terjadi kesalahan");
     } finally {
@@ -183,7 +234,41 @@ export function ReservationActions({ reservation }: Props) {
           </Button>
         </div>
 
-        {!transitions.length && (
+        {isConfirmed && (
+          <div className="border-t border-border-soft pt-4">
+            <p className="text-sm text-text-secondary mb-2">Pengingat Pasien:</p>
+            <a
+              href={buildReminderUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <Bell size={16} /> Kirim Reminder H-1 via WhatsApp
+            </a>
+          </div>
+        )}
+
+        {whatsappUrl && (
+          <div className="bg-green-50 border border-green-200 p-4 rounded-lg space-y-3">
+            <p className="text-sm font-medium text-green-800">Status berhasil diperbarui! Kirim notifikasi ke pasien via WhatsApp:</p>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <MessageCircle size={16} /> Kirim WhatsApp ke {reservation.patient.name}
+            </a>
+            <button
+              onClick={() => setWhatsappUrl(null)}
+              className="block text-xs text-gray-500 hover:text-gray-700"
+            >
+              Tutup
+            </button>
+          </div>
+        )}
+
+        {!transitions.length && !whatsappUrl && (
           <div className="flex items-center gap-2 text-sm text-text-secondary bg-gray-50 p-3 rounded-lg">
             <Clock size={16} />
             <span>Reservasi ini sudah final dan tidak dapat diubah statusnya.</span>

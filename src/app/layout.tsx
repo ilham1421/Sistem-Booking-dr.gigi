@@ -11,6 +11,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Benteng Dental Care - drg. Astuti",
   description: "Pelayanan kesehatan gigi yang bersih, nyaman, dan profesional di Desa Benteng, Kec. Mandalle, Kab. Pangkep",
+  icons: {
+    icon: "/logo.jpeg",
+    apple: "/logo.jpeg",
+  },
 };
 
 export const viewport = {

@@ -142,7 +142,20 @@ export default async function ReservationDetailPage({ params }: Props) {
         </Card>
 
         {/* Actions */}
-        <ReservationActions reservation={reservation} />
+        <ReservationActions reservation={{
+          id: reservation.id,
+          status: reservation.status,
+          date: reservation.date,
+          time: reservation.time,
+          adminNotes: reservation.adminNotes,
+          patient: {
+            name: reservation.patient.name,
+            phone: reservation.patient.phone,
+          },
+          service: {
+            name: reservation.service.name,
+          },
+        }} />
       </div>
 
       {/* Logs */}

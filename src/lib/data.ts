@@ -15,7 +15,7 @@ export const getSettings = cache(async () => {
       return map;
     },
     ["settings"],
-    { revalidate: 120, tags: ["settings"] }
+    { revalidate: 600, tags: ["settings"] }
   )();
 });
 
@@ -29,7 +29,7 @@ export const getActiveSchedules = cache(async () => {
       });
     },
     ["active-schedules"],
-    { revalidate: 120, tags: ["schedules"] }
+    { revalidate: 600, tags: ["schedules"] }
   )();
 });
 
@@ -43,7 +43,7 @@ export const getActiveServices = cache(async () => {
       });
     },
     ["active-services"],
-    { revalidate: 120, tags: ["services"] }
+    { revalidate: 600, tags: ["services"] }
   )();
 });
 
@@ -58,7 +58,7 @@ export const getTestimonials = cache(async (limit = 3) => {
       });
     },
     [`testimonials-${limit}`],
-    { revalidate: 120, tags: ["testimonials"] }
+    { revalidate: 600, tags: ["testimonials"] }
   )();
 });
 
@@ -72,6 +72,6 @@ export const getActiveFaqs = cache(async () => {
       });
     },
     ["active-faqs"],
-    { revalidate: 120, tags: ["faqs"] }
+    { revalidate: 600, tags: ["faqs"] }
   )();
 });

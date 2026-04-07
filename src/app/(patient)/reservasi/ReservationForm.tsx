@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarCheck, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { CalendarCheck, AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -11,6 +11,8 @@ import { Card, CardContent } from "@/components/ui/Card";
 interface ServiceOption {
   value: string;
   label: string;
+  price?: number | null;
+  duration?: number | null;
 }
 
 interface Props {
@@ -22,21 +24,59 @@ interface FormErrors {
   [key: string]: string;
 }
 
-const timeOptions = [
-  { value: "09:00", label: "09:00" },
-  { value: "10:00", label: "10:00" },
-  { value: "11:00", label: "11:00" },
-  { value: "13:00", label: "13:00" },
-  { value: "14:00", label: "14:00" },
-  { value: "15:00", label: "15:00" },
-  { value: "16:00", label: "16:00" },
-];
+interface TimeSlot {
+  time: string;
+  available: boolean;
+  remaining: number;
+}
+
+interface AvailabilityData {
+  available: boolean;
+  reason: string | null;
+  slots: TimeSlot[];
+}
 
 export function ReservationForm({ serviceOptions, whatsapp }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formError, setFormError] = useState("");
+  const [selectedServiceId, setSelectedServiceId] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [availability, setAvailability] = useState<AvailabilityData | null>(null);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+
+  const selectedService = serviceOptions.find((s) => s.value === selectedServiceId);
+
+  const fetchAvailability = useCallback(async (date: string) => {
+    if (!date) {
+      setAvailability(null);
+      return;
+    }
+    setLoadingSlots(true);
+    try {
+      const res = await fetch(`/api/reservations/availability?date=${date}`);
+      const data = await res.json();
+      setAvailability(data);
+    } catch {
+      setAvailability(null);
+    } finally {
+      setLoadingSlots(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAvailability(selectedDate);
+  }, [selectedDate, fetchAvailability]);
+
+  const timeOptions = availability?.available
+    ? availability.slots
+        .filter((s) => s.available)
+        .map((s) => ({
+          value: s.time,
+          label: `${s.time} (${s.remaining} slot tersisa)`,
+        }))
+    : [];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -128,9 +168,16 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
               Tim kami akan segera menghubungi Anda melalui WhatsApp untuk
               mengonfirmasi jadwal reservasi.
             </p>
-            <Button onClick={() => setIsSuccess(false)} variant="outline">
-              Buat Reservasi Lagi
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a href="/cek-reservasi">
+                <Button className="gap-2">
+                  <CalendarCheck size={16} /> Cek Status Reservasi
+                </Button>
+              </a>
+              <Button onClick={() => setIsSuccess(false)} variant="outline">
+                Buat Reservasi Lagi
+              </Button>
+            </div>
           </div>
         </section>
       </>
@@ -223,26 +270,58 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
                   id="serviceId"
                   name="serviceId"
                   label="Pilih Layanan *"
-                  options={serviceOptions}
+                  options={serviceOptions.map((s) => ({ value: s.value, label: s.label }))}
                   error={errors.serviceId}
+                  onChange={(e) => setSelectedServiceId(e.target.value)}
                 />
 
+                {selectedService && (selectedService.price || selectedService.duration) && (
+                  <div className="flex items-start gap-2 bg-lavender rounded-lg p-3 -mt-2">
+                    <Info size={16} className="text-primary mt-0.5 shrink-0" />
+                    <div className="text-sm text-text-dark">
+                      {selectedService.duration && (
+                        <span>Estimasi durasi: <strong>~{selectedService.duration} menit</strong></span>
+                      )}
+                      {selectedService.duration && selectedService.price ? " · " : ""}
+                      {selectedService.price && (
+                        <span>Biaya: <strong>{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(selectedService.price)}</strong></span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <Input
-                    id="date"
-                    name="date"
-                    type="date"
-                    label="Tanggal Reservasi *"
-                    min={new Date().toISOString().split("T")[0]}
-                    error={errors.date}
-                  />
-                  <Select
-                    id="time"
-                    name="time"
-                    label="Jam Reservasi *"
-                    options={timeOptions}
-                    error={errors.time}
-                  />
+                  <div>
+                    <Input
+                      id="date"
+                      name="date"
+                      type="date"
+                      label="Tanggal Reservasi *"
+                      min={new Date().toISOString().split("T")[0]}
+                      error={errors.date}
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                    />
+                    {loadingSlots && (
+                      <p className="text-xs text-text-secondary mt-1">Memeriksa ketersediaan...</p>
+                    )}
+                    {availability && !availability.available && (
+                      <p className="text-xs text-red-600 mt-1">⚠ {availability.reason}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Select
+                      id="time"
+                      name="time"
+                      label="Jam Reservasi *"
+                      options={timeOptions}
+                      error={errors.time}
+                      disabled={!selectedDate || !availability?.available}
+                    />
+                    {selectedDate && availability?.available && timeOptions.length === 0 && !loadingSlots && (
+                      <p className="text-xs text-red-600 mt-1">Semua slot penuh di tanggal ini</p>
+                    )}
+                  </div>
                 </div>
 
                 <Textarea
