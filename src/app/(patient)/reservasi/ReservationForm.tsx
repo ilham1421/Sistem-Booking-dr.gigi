@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { CalendarCheck, AlertTriangle, CheckCircle2, Info } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -46,6 +46,14 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
   const [selectedTime, setSelectedTime] = useState("");
   const [availability, setAvailability] = useState<AvailabilityData | null>(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+
+  // Set min date on client side only
+  useEffect(() => {
+    const input = dateInputRef.current;
+    if (!input) return;
+    input.min = new Date().toISOString().split("T")[0];
+  }, []);
 
   const selectedService = serviceOptions.find((s) => s.value === selectedServiceId);
 
@@ -56,7 +64,7 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
     }
     setLoadingSlots(true);
     try {
-      const res = await fetch(`/api/reservations/availability?date=${date}`);
+      const res = await fetch(`/api/reservations/availability?date=${encodeURIComponent(date)}`);
       if (!res.ok) {
         setAvailability(null);
         return;
@@ -296,41 +304,40 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <Input
+                <div>
+                  <div className="space-y-1">
+                    <label htmlFor="date" className="block text-sm font-medium text-text-dark">
+                      Tanggal Reservasi *
+                    </label>
+                    <input
+                      ref={dateInputRef}
                       id="date"
                       name="date"
                       type="date"
-                      label="Tanggal Reservasi *"
-                      min={new Date().toISOString().split("T")[0]}
-                      error={errors.date}
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-2.5 rounded-lg border bg-white text-text-dark focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors text-base sm:text-sm ${errors.date ? 'border-danger focus:ring-danger/30' : 'border-border-soft'}`}
                     />
-                    {loadingSlots && (
-                      <p className="text-xs text-text-secondary mt-1">Memeriksa ketersediaan...</p>
-                    )}
-                    {availability && !availability.available && (
-                      <p className="text-xs text-red-600 mt-1">⚠ {availability.reason}</p>
-                    )}
+                    {errors.date && <p className="text-sm text-danger">{errors.date}</p>}
                   </div>
-                  <div>
-                    <Select
-                      id="time"
-                      name="time"
-                      label="Jam Reservasi *"
-                      options={timeOptions}
-                      error={errors.time}
-                      disabled={!selectedDate || !availability?.available || loadingSlots}
-                      value={selectedTime}
-                      onChange={(e) => setSelectedTime(e.target.value)}
-                    />
-                    {selectedDate && availability?.available && timeOptions.length === 0 && !loadingSlots && (
-                      <p className="text-xs text-red-600 mt-1">Semua slot penuh di tanggal ini</p>
-                    )}
-                  </div>
+                  {loadingSlots && (
+                    <p className="text-xs text-text-secondary mt-1">Memeriksa ketersediaan...</p>
+                  )}
+                  {availability && !availability.available && (
+                    <p className="text-xs text-red-600 mt-1">⚠ {availability.reason}</p>
+                  )}
                 </div>
+
+                <Select
+                  id="time"
+                  name="time"
+                  label="Jam Reservasi *"
+                  options={timeOptions}
+                  error={errors.time}
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  disabled={!availability?.available || timeOptions.length === 0}
+                />
 
                 <Textarea
                   id="complaint"
