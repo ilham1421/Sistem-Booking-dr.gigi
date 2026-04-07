@@ -43,6 +43,7 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
   const [formError, setFormError] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
   const [availability, setAvailability] = useState<AvailabilityData | null>(null);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
@@ -56,6 +57,10 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
     setLoadingSlots(true);
     try {
       const res = await fetch(`/api/reservations/availability?date=${date}`);
+      if (!res.ok) {
+        setAvailability(null);
+        return;
+      }
       const data = await res.json();
       setAvailability(data);
     } catch {
@@ -66,6 +71,7 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
   }, []);
 
   useEffect(() => {
+    setSelectedTime("");
     fetchAvailability(selectedDate);
   }, [selectedDate, fetchAvailability]);
 
@@ -316,7 +322,9 @@ export function ReservationForm({ serviceOptions, whatsapp }: Props) {
                       label="Jam Reservasi *"
                       options={timeOptions}
                       error={errors.time}
-                      disabled={!selectedDate || !availability?.available}
+                      disabled={!selectedDate || !availability?.available || loadingSlots}
+                      value={selectedTime}
+                      onChange={(e) => setSelectedTime(e.target.value)}
                     />
                     {selectedDate && availability?.available && timeOptions.length === 0 && !loadingSlots && (
                       <p className="text-xs text-red-600 mt-1">Semua slot penuh di tanggal ini</p>
