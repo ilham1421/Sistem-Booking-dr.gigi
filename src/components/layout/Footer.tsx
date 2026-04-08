@@ -82,7 +82,7 @@ export function Footer({ settings }: Props) {
             &copy; {new Date().getFullYear()} Benteng Dental Care. All rights reserved. by. <a href="https://github.com/ilham1421" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white underline transition-colors">Manusia_Human</a>
           </p>
           <div className="flex items-center gap-4">
-            <Link href="/admin/login" className="text-xs text-gray-600 hover:text-gray-400">
+            <Link href="/admin/login" className="text-xs text-gray-700 hover:text-gray-400 transition-colors opacity-30 hover:opacity-100">
               Admin
             </Link>
           </div>
