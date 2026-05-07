@@ -113,17 +113,6 @@ npm run dev
 - Publik: http://localhost:3000
 - Admin: http://localhost:3000/admin/login
 
-## Akun Default Seed (Development)
-
-Data default dari proses seed untuk uji coba lokal:
-
-| Role | Email | Password |
-|---|---|---|
-| Admin | bentengdentalcare@gmail.com | admin123 |
-| Doctor | drg.astuti@bentengdentalcare.com | doctor123 |
-
-Catatan keamanan: jangan pakai kredensial ini di production.
-
 ## NPM Scripts
 
 ```bash
