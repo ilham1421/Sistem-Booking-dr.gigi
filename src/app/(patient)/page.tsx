@@ -64,7 +64,7 @@ export default async function HomePage() {
             </div>
             <h1 className="text-[1.75rem] leading-9 sm:text-4xl md:text-5xl lg:text-6xl font-bold text-text-dark sm:leading-tight mb-4 sm:mb-6">
               Pelayanan Kesehatan Gigi yang{" "}
-              <span className="bg-linear-to-r from-primary to-primary-light bg-clip-text text-transparent">Bersih, Nyaman,</span>{" "}
+              <span className="text-yellow-400">Bersih,</span> <span className="text-orange-400">Nyaman,</span>{" "}
               dan Profesional
             </h1>
             <p className="text-sm sm:text-lg text-text-secondary mb-8 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
